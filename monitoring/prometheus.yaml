@@ -1,0 +1,11 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'netflix-services'
+    static_configs:
+      - targets:
+        - 'user-service:80'
+        - 'catalog-service:80'
+        - 'playback-service:80'
+    metrics_path: '/metrics'

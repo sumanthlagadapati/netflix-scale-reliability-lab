@@ -1,0 +1,10 @@
+--- SNAPSHOT: services_status ---
+Timestamp: 20260505_163752
+Command: kubectl get svc
+------------------------------
+NAME               TYPE           CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+catalog-service    ClusterIP      10.96.172.64    <none>        80/TCP         24m
+edge-cache         LoadBalancer   10.96.199.13    172.18.0.9    80:30968/TCP   15m
+kubernetes         ClusterIP      10.96.0.1       <none>        443/TCP        25m
+playback-service   ClusterIP      10.96.206.94    <none>        80/TCP         24m
+user-service       ClusterIP      10.96.130.148   <none>        80/TCP         24m

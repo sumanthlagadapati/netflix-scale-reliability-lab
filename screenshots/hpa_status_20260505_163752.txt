@@ -1,0 +1,7 @@
+--- SNAPSHOT: hpa_status ---
+Timestamp: 20260505_163752
+Command: kubectl get hpa
+------------------------------
+NAME                   REFERENCE                     TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+catalog-service-hpa    Deployment/catalog-service    cpu: <unknown>/50%   2         10        2          24m
+playback-service-hpa   Deployment/playback-service   cpu: <unknown>/50%   2         10        2          24m

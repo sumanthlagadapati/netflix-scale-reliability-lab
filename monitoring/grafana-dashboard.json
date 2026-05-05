@@ -1,0 +1,31 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Netflix Scale Lab Dashboard",
+    "tags": ["netflix", "microservices"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "title": "Request Rate by Service",
+        "type": "graph",
+        "targets": [
+          { "expr": "rate(http_request_duration_seconds_count[1m])" }
+        ]
+      },
+      {
+        "title": "Chaos Monkey Impact (Pod Count)",
+        "type": "stat",
+        "targets": [
+          { "expr": "count(kube_pod_status_phase{phase='Running'})" }
+        ]
+      },
+      {
+        "title": "Catalog Latency (Simulated)",
+        "type": "heatmap",
+        "targets": [
+          { "expr": "rate(http_request_duration_seconds_bucket[5m])" }
+        ]
+      }
+    ]
+  }
+}

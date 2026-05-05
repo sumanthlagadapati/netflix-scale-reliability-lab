@@ -1,0 +1,12 @@
+--- SNAPSHOT: pods_status ---
+Timestamp: 20260505_163751
+Command: kubectl get pods
+------------------------------
+NAME                                READY   STATUS    RESTARTS   AGE
+catalog-service-f8bdbcc6d-92hr5     1/1     Running   0          7m8s
+catalog-service-f8bdbcc6d-mlnr8     1/1     Running   0          9m31s
+edge-cache-7c74cf59d9-xtftb         1/1     Running   0          15m
+playback-service-847df7c874-7c99l   1/1     Running   0          16m
+playback-service-847df7c874-j4nw9   1/1     Running   0          16m
+user-service-7475d86b4d-2prrb       1/1     Running   0          8m5s
+user-service-7475d86b4d-pqth8       1/1     Running   0          16m
