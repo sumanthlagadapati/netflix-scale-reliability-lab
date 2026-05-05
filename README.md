@@ -103,6 +103,12 @@ Watch Kubernetes instantly replace pods killed by the Chaos Monkey:
 kubectl get pods -w
 ```
 
+### 5. Cleanup
+To stop all services and reduce resource usage (CPU/Memory):
+```powershell
+./scripts/cleanup.ps1
+```
+
 ### Automated Snapshots
 I've included a utility to capture the current state of your cluster for documentation:
 ```powershell
