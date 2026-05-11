@@ -123,3 +123,5 @@ This will save timestamped text logs of your pods, services, and HPA status into
 
 ---
 *Built as a DevSecOps Engineering Study Lab.*
+## 👨‍💻 Author
+**Sumanth Lagadapati**  
