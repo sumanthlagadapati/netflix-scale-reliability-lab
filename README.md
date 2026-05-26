@@ -50,6 +50,80 @@ graph TD
 
 ---
 
+## 📑 Logging Behavior (catalog-service)
+
+The `catalog-service` now supports file-based logging for all HTTP requests and events. Two logging modes are available:
+
+### 1. Log Rotation (Default)
+- Uses [lumberjack](https://github.com/natefinch/lumberjack) for automatic log rotation.
+- Log file: `catalog-service.log` (in the working directory)
+- Rotation settings:
+  - Max size: 5MB
+  - Max backups: 3
+  - Max age: 28 days
+  - Old logs are compressed
+- Enabled by default via `main_lumberjack.go` (see Dockerfile).
+
+### 2. Standard File Logging
+- Uses Go's standard library to log to `catalog-service.log`.
+- No automatic rotation; log file grows indefinitely.
+- Use `main_stdlog.go` to enable this mode.
+
+**Switching Modes:**
+- By default, the Dockerfile builds and runs `main_lumberjack.go` (log rotation enabled).
+- To use standard logging, change the Dockerfile build command to use `main_stdlog.go`.
+
+**Log Output:**
+- All requests to `/health`, `/metrics`, and `/movies` are logged with client IP and endpoint info.
+- Log files are created in the container/app working directory.
+
+### 🧹 Log & Generated File Cleanup
+To remove log files and other generated files for all services, use the provided cleanup scripts:
+
+- **Bash (Linux/macOS):**
+  ```bash
+  ./scripts/cleanup.sh
+  ```
+- **PowerShell (Windows):**
+  ```powershell
+  ./scripts/cleanup.ps1
+  ```
+
+These scripts will:
+- Delete all `.log` and rotated `.log*` files in each service directory, including `catalog-service.log`, `playback-service.log`, `user-service.log`, `edge-cache.log`, and any `.log` files in the `chaos/` folder.
+- Remove any other generated `.log` files (including backups) created by your services or chaos scripts.
+- Clean up Kubernetes resources by deleting all services and infrastructure manifests.
+
+**Example of what gets deleted:**
+- `services/catalog-service/*.log*`
+- `services/playback-service/*.log*`
+- `services/user-service/*.log*`
+- `services/edge-cache/*.log*`
+- `chaos/*.log*`
+
+> If you generate additional files (e.g., debug logs, custom output) in these directories, the cleanup scripts will remove them as well if they match the `.log*` pattern.
+
+#### 🛠️ Troubleshooting Cleanup Scripts
+If you encounter issues with the cleanup scripts, try the following tips:
+
+- **Permission Denied:**
+  - Make sure the scripts are executable. On Unix systems, run `chmod +x ./scripts/cleanup.sh`.
+  - If running in a container or restricted environment, ensure you have permission to delete files.
+- **Files Not Deleted:**
+  - Check that the log files are not open or locked by a running process.
+  - Make sure you are running the script from the project root directory.
+  - Verify that the file patterns in the script match your generated files.
+- **Script Not Found:**
+  - Ensure you are using the correct relative path (`./scripts/cleanup.sh` or `./scripts/cleanup.ps1`).
+- **Windows PowerShell Execution Policy:**
+  - If you see a policy error, run `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass` in your PowerShell session before running the script.
+- **Custom File Locations:**
+  - If you have added new directories or changed log file locations, update the cleanup scripts to include those paths.
+
+If problems persist, review the script output for error messages or manually delete files as needed.
+
+---
+
 ## 🛠️ Getting Started
 
 ### 1. Prerequisites
@@ -76,6 +150,37 @@ cd chaos
 pip install -r requirements.txt
 python chaos_monkey.py
 ```
+
+#### Global Outage Simulation (Disaster Drill)
+To simulate a global outage (terminate all Netflix service pods at once):
+```powershell
+python chaos_monkey.py --global-outage
+```
+Or, using an environment variable (lower precedence than CLI flag):
+```powershell
+$env:GLOBAL_OUTAGE_MODE="true"; python chaos_monkey.py
+```
+
+#### Logging Chaos Events to a File
+To write all chaos events to a log file (in addition to console):
+```powershell
+python chaos_monkey.py --log-file chaos_events.log
+```
+You can combine with global outage mode:
+```powershell
+python chaos_monkey.py --global-outage --log-file chaos_events.log
+```
+
+##### Log Rotation
+To prevent log files from growing too large, log rotation is supported:
+- `--log-max-bytes`: Maximum size (in bytes) of a log file before it is rotated. Default: 5MB.
+- `--log-backup-count`: Number of rotated backup log files to keep. Default: 3.
+
+Example:
+```powershell
+python chaos_monkey.py --log-file chaos_events.log --log-max-bytes 1048576 --log-backup-count 5
+```
+This will rotate the log file every 1MB and keep up to 5 backups.
 
 ---
 
